@@ -1,0 +1,23 @@
+{
+    "name": "spool/prdis",
+    "description": "Redis based on PHP source development",
+    "type": "project",
+    "license": "php",
+    "authors": [
+        {
+            "name": "Haobo Chen",
+            "email": "yydick@sohu.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.0.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "@stable"
+    },
+    "autoload": {
+        "psr-4": {
+            "Yin32167\\CpsTpl\\": "src/"
+        }
+    }
+}
