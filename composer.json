@@ -1,5 +1,5 @@
 {
-    "name": "spool/prdis",
+    "name": "spool/pedis",
     "description": "Redis based on PHP source development",
     "type": "project",
     "license": "php",
@@ -17,7 +17,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Yin32167\\CpsTpl\\": "src/"
+            "Spool\\Pedis\\": "src/"
         }
     }
 }
