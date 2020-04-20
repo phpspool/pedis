@@ -15,5 +15,10 @@ namespace Spool\Pedis\Lib;
  */
 class PedisServer
 {
-    //put your code here
+    protected $config;
+    protected $cache = [];
+    public function __callStatic()
+    {
+        
+    }
 }
