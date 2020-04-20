@@ -12,8 +12,8 @@ class ExampleTest extends TestCase
 
     public function testEmpty()
     {
-        $tmp = microtime(TRUE);
-        var_dump($tmp);
+        $tmp = function(){};
+        var_dump($tmp, is_callable($tmp));
         $this->assertTrue(TRUE);
     }
 }

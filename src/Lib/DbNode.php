@@ -9,6 +9,7 @@
 namespace Spool\Pedis\Lib;
 
 use Spool\Pedis\Lib\KeyNode;
+
 /**
  * Pedis的数据库类,用于操作数据库里面的所有键值
  *
@@ -16,25 +17,35 @@ use Spool\Pedis\Lib\KeyNode;
  */
 class DbNode
 {
+
+    public static $toSearch = '';
+
     /**
      * 实际储存的数据
      * @var array[KeyNode]
      */
-    private $data = [];
+    private $data           = [];
+
     /**
      * 当前数据库中保存的所有键值
      * @var array
      */
-    private $keys = [];
+    private $keys           = [];
+
     /**
      * 翻转的当前所有的键值
      * @var array
      */
-    private $flipKeys = [];
+    private $flipKeys       = [];
+
+    /**
+     * 
+     */
     public function __construct()
     {
         
     }
+
     /**
      * 批量删除多个key
      * @param array $key
@@ -54,6 +65,7 @@ class DbNode
         }
         return $i;
     }
+
     /**
      * 判断一个key是否存在
      * @param string $key
@@ -63,7 +75,7 @@ class DbNode
     {
         return array_key_exists($key, $this->data) ? 1 : 0;
     }
-    
+
     public function expire(string $key, int $seconds): int
     {
         if (!key_exists($key, $this->data)) {
@@ -73,7 +85,7 @@ class DbNode
         $keyNode = &$this->data[$key];
         return $keyNode->expire($seconds);
     }
-    
+
     public function expireAt(string $key, int $seconds): int
     {
         if (!key_exists($key, $this->data)) {
@@ -83,9 +95,27 @@ class DbNode
         $keyNode = &$this->data[$key];
         return $keyNode->expireAt($seconds);
     }
-    
+
     public function keys(string $key): array
     {
-        
+        $data = [];
+        switch ($key) {
+            case '*':
+                $data           = $this->keys;
+                break;
+            case '':
+                break;
+            default:
+                self::$toSearch = $key;
+                array_walk($this->keys, function($item, string $key, array &$data) {
+                    if (true) {
+                        
+                    }
+                }, $data);
+                self::$toSearch = '';
+                break;
+        }
+        return $data;
     }
+
 }
