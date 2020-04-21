@@ -22,7 +22,7 @@ abstract class KeyNode
     private $data;
     /**
      * 生存时间
-     * @var int -1永不过期|0已过期|剩余的生存时间
+     * @var int -2已过期|-1永不过期|n剩余的生存时间
      */
     private $expire = -1;
     /**
@@ -35,11 +35,6 @@ abstract class KeyNode
      * @var string String|List|Set|Zset|Hash
      */
     private $type = 'String';
-    /**
-     * lru算法内存超限时清理
-     * @var int
-     */
-    private $lru = -1;
 
     public function __sleep (): array
     {
@@ -48,6 +43,9 @@ abstract class KeyNode
     
     public function expire(int $seconds): int
     {
+        if (-2 === $this->expire) {
+            return 0;
+        }
         $time = time();
         $this->expireTime = $time;
         $this->expire = $seconds;
@@ -55,6 +53,9 @@ abstract class KeyNode
     }
     public function expireAt(int $seconds): int
     {
+        if (-2 === $this->expire) {
+            return 0;
+        }
         $time = time();
         //如果设置的时间小于当前时间,返回0
         if ($seconds < $time) {
@@ -62,6 +63,19 @@ abstract class KeyNode
         }
         $this->expireTime = $time;
         $this->expire = $seconds - $time;
+        return 1;
+    }
+    /**
+     * 移除该健之前设定的生存时间
+     * 
+     */
+    public function persist(): int
+    {
+        if (-1 === $this->expire || -2 === $this->expire) {
+            return 0;
+        }
+        $this->expire = -1;
+        $this->expireTime = 0;
         return 1;
     }
 }

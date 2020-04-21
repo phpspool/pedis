@@ -67,7 +67,7 @@ abstract class AbstractConstants
         return self::$method($str);
     }
     
-    public static function Message(string $msg): string
+    private static function Message(string $msg): string
     {
         $tmp = str_replace(__FUNCTION__, '', trim($msg));
         $result = substr($tmp, 2, -2);
