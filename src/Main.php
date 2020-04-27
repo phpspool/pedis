@@ -7,8 +7,15 @@ declare(strict_types=1);
  */
 
 namespace Spool\Pedis;
+use Spool\Pedis\Lib\Config;
+use Spool\Pedis\Lib\BootStrap;
 
 class Main
 {
-    
+    public function __construct(string $configFile = '')
+    {
+        $config = new Config($configFile);
+        $bootStrap = new BootStrap($config);
+        $bootStrap->Run();
+    }
 }

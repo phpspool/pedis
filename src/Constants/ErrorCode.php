@@ -9,7 +9,7 @@
 namespace Spool\Pedis\Constants;
 
 /**
- * Pedis报错信息,1000+启动错误|2000+DB错误|3000+KeyList错误|4000+KeyNode错误
+ * Pedis报错信息,1000+启动错误|2000+DB错误|3000+KeyList错误|4000+KeyNode错误|9000+结束错误
  *
  * @author 陈浩波
  */
@@ -20,6 +20,18 @@ class ErrorCode extends AbstractConstants
      */
     const CONFIG_NOT_STRING_OR_ARRAY = 1401;
     /**
+     * @Message('pid文件已经存在')
+     */
+    const PID_FILE_IS_EXISTS = 1001;
+    /**
+     * @Message('fork子进程失败')
+     */
+    const FORK_FAILURE = 1101;
+    /**
+     * @Message('子进程独立失败')
+     */
+    const SET_SID_FAILUER = 1102;
+    /**
      * @Message('不能选择超出配置的数据库')
      */
     const CANNOT_SELECT_LARGER_THAN_THE_CONFIGURATION_DATABASE = 2100;
@@ -27,4 +39,9 @@ class ErrorCode extends AbstractConstants
      * @Message('数据格式错误')
      */
     const DATA_FORMATTING_ERROR = 4100;
+    /**
+     * @Message('pid文件没有移除')
+     */
+    const PID_FILE_NOT_REMOVE = 9100;
+    
 }
