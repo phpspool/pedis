@@ -10,11 +10,32 @@ namespace Spool\Pedis\Constants;
 
 /**
  * Pedis报错信息,1000+启动错误|2000+DB错误|3000+KeyList错误|4000+KeyNode错误|9000+结束错误
- *
+ * 致命错误信息:< 0
  * @author 陈浩波
  */
 class ErrorCode extends AbstractConstants
 {
+    
+    /**
+     * @Message('设置GID失败')
+     */
+    const UNABLE_TO_SETGID = -1001;
+    /**
+     * @Message('设置UID失败')
+     */
+    const UNABLE_TO_SETUID = -1002;
+    /**
+     * @Message('创建socket失败')
+     */
+    const FAILED_TO_CREATE_SOCKET = -1100;
+    /**
+     * @Message('绑定socket失败')
+     */
+    const FAILED_TO_BIND_TO_SOCKET = -1101;
+    /**
+     * @Message('监听socket失败')
+     */
+    const FAILED_TO_LISTEN_TO_SOCKET = -1102;
     /**
      * @Message('$config not is string or array!')
      */

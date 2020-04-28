@@ -15,7 +15,7 @@ class Main
     public function __construct(string $configFile = '')
     {
         $config = new Config($configFile);
-        $bootStrap = new BootStrap($config);
+        $bootStrap = BootStrap::Init($config);
         $bootStrap->Run();
     }
 }

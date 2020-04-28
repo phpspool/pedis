@@ -37,15 +37,41 @@ class BootStrap
     ];
 
     /**
+     * 单例模式
+     * @var BootStrap 
+     */
+    private static $one;
+    
+    private $server;
+
+    /**
      * 构建函数,初始化,读取配置信息
      * @param \Spool\Pedis\Lib\Config $config
      * @param void $agvs
      */
-    public function __construct(Config $config, ...$agvs)
+    private function __construct()
     {
-        $this->config = $config;
+        
     }
 
+    /**
+     * 返回单例对象
+     * @param \Spool\Pedis\Lib\Config $config
+     * @return \Spool\Pedis\Lib\BootStrap
+     */
+    public static function Init(Config $config): BootStrap
+    {
+        if (self::$one) {
+            return self::$one;
+        }
+        self::$one         = new BootStrap();
+        self::$one->config = $config;
+        return self::$one;
+    }
+
+    /**
+     * 开始运行
+     */
     public function Run()
     {
         $this->checkEvent();
@@ -61,17 +87,17 @@ class BootStrap
             }
         }
     }
-
+    /**
+     * 启动服务
+     * @throws PedisException
+     */
     private function startServer()
     {
-        foreach ($this->event['startAfter'] as $callInfo) {
-            call_user_func($callInfo['callBack'], $callInfo['params'] ?? NULL);
-        }
-        sleep(10);
-        echo "\nI'm a super process!\n";
-        foreach ($this->event['endBefore'] as $callInfo) {
-            call_user_func($callInfo['callBack'], $callInfo['params'] ?? NULL);
-        }
+//        sleep(5);
+        $msg = "\nI'm a super process!\n";
+        fwrite(STDOUT, $msg);
+        $this->server = PedisServer::Init($this->config, $this->event);
+        $this->server->serverStart();
         if (is_file($this->config->pidfile)) {
             try {
                 unlink($this->config->pidfile);
@@ -81,6 +107,11 @@ class BootStrap
         }
     }
 
+    /**
+     * 蜕变成守护进程
+     * @return int
+     * @throws PedisException
+     */
     private function Begin(): int
     {
         $pid = pcntl_fork();
@@ -119,10 +150,18 @@ class BootStrap
      */
     private function checkEvent(): bool
     {
+        /**
+         * 如果pid文件存在,则不启动
+         */
         if (is_file($this->config->pidfile)) {
             throw new PedisException(ErrorCode::PID_FILE_IS_EXISTS);
         }
+        /**
+         * 开启pcntl异步信号
+         */
+        if (!pcntl_async_signals()) {
+            pcntl_async_signals(true);
+        }
         return TRUE;
     }
-
 }

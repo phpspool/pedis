@@ -23,6 +23,10 @@ class ExampleTest extends TestCase
     
     public function testRun()
     {
+        $filename = '/var/pedis/run/pedis_9736.pid';
+        if (is_file($filename)) {
+            unlink($filename);
+        }
         $main = new Main();
         $this->assertTrue(TRUE);
     }

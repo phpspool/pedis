@@ -24,7 +24,7 @@ class Config
      * bind ip address
      * @var string
      */
-    public $bind                    = 'localhost';
+    public $host                    = 'localhost';
 
     /**
      * port
@@ -157,7 +157,7 @@ class Config
             throw new PedisException(ErrorCode::CONFIG_NOT_STRING_OR_ARRAY);
         }
 //        var_dump($readyConfig);exit;
-        $this->bind                    = $readyConfig["NETWORK"]['bind'] ?? $this->bind;
+        $this->host                    = $readyConfig["NETWORK"]['host'] ?? $this->host;
         $this->port                    = $readyConfig["NETWORK"]['port'] ?? $this->port;
         $this->timeout                 = $readyConfig["NETWORK"]['timeout'] ?? $this->timeout;
         $this->tcpKeepalive            = $readyConfig["NETWORK"]['tcpKeepalive'] ?? $this->tcpKeepalive;
