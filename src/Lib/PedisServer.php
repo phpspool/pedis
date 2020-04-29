@@ -172,12 +172,17 @@ class PedisServer
                         fwrite(STDOUT, "send: {$data}\n");
                         $sendMsg = $data . "\n";
                         $len = strlen($sendMsg);
+                        $sendLen = 0;
                         // write the message to the client -- add a newline character to the end of the message
                         try {
-                            socket_send($send_sock, $sendMsg, $len, MSG_DONTROUTE);
+//                            socket_send($send_sock, $sendMsg, $len, MSG_DONTROUTE);
+                            $sendLen = socket_write($send_sock, $sendMsg, $len);
                         } catch (\Exception $exc) {
                             echo $exc->getTraceAsString();
                             echo $exc->getMessage();
+                        }
+                        if ($sendLen) {
+                            fwrite(STDOUT, "need send {$len}, send {$sendLen}\n");
                         }
                     } // end of broadcast foreach
                 }
