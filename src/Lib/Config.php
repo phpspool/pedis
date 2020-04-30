@@ -18,7 +18,6 @@ use Spool\Pedis\Constants\ErrorCode;
  */
 class Config
 {
-
     //NETWORK
     /**
      * bind ip address

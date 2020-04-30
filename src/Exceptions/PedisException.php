@@ -9,7 +9,7 @@
 namespace Spool\Pedis\Exceptions;
 
 use Exception;
-use Spool\Pedis\Constants\ApiErrorCode;
+use Spool\Pedis\Constants\ErrorCode;
 /**
  * Description of PedisException
  *

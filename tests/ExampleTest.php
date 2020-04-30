@@ -28,6 +28,7 @@ class ExampleTest extends TestCase
             unlink($filename);
         }
         $main = new Main();
+        $main->Run();
         $this->assertTrue(TRUE);
     }
 }

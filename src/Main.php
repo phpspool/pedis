@@ -12,10 +12,18 @@ use Spool\Pedis\Lib\BootStrap;
 
 class Main
 {
+    private $config;
     public function __construct(string $configFile = '')
     {
-        $config = new Config($configFile);
-        $bootStrap = BootStrap::Init($config);
+        $this->config = $configFile ? new Config($configFile) : new Config();
+    }
+    public function setConfig(Config $config)
+    {
+        $this->config = $config;
+    }
+    public function Run()
+    {
+        $bootStrap = BootStrap::Init($this->config);
         $bootStrap->Run();
     }
 }

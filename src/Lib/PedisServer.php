@@ -54,6 +54,10 @@ class PedisServer
      * @var array
      */
     private $client = [];
+    
+    private $existsWatchers = [];
+    private $nodeWatchers = [];
+    private $clientWatchers = [];
 
     private function __construct()
     {
@@ -89,6 +93,8 @@ class PedisServer
         }
         $sndbuf = socket_get_option($sock, SOL_SOCKET, SO_SNDBUF);
         $rcvbuf = socket_get_option($sock, SOL_SOCKET, SO_RCVBUF);
+        $log = Log::debug("send buffer size(写缓存区大小):" . $sndbuf / 1024 . "}m \n");
+        fwrite(STDOUT, "log: " . $log . "\n");
         printf("send buffer size(写缓存区大小):%sm \n", $sndbuf / 1024);
         printf("receive buffer(读缓存区大小)%sm \n", $rcvbuf / 1024);
         $this->workNode($sock);
@@ -200,6 +206,11 @@ class PedisServer
                 }
             } // end of reading foreach
         }
+    }
+    
+    private function addClient($sock)
+    {
+        
     }
 
     private function bindIPAndPort(&$sock): bool

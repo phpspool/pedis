@@ -18,6 +18,7 @@
     "autoload": {
         "psr-4": {
             "Spool\\Pedis\\": "src/"
-        }
+        },
+        "files":["src/BaseInit.php"]
     }
 }

@@ -9,7 +9,12 @@
 namespace Spool\Pedis\Constants;
 
 /**
- * Pedis报错信息,1000+启动错误|2000+DB错误|3000+KeyList错误|4000+KeyNode错误|9000+结束错误
+ * Pedis报错信息,1000+启动错误
+ * |2000+DB错误
+ * |3000+KeyList错误
+ * |4000+KeyNode错误
+ * |8000+Log错误
+ * |9000+结束错误
  * 致命错误信息:< 0
  * @author 陈浩波
  */
@@ -64,5 +69,25 @@ class ErrorCode extends AbstractConstants
      * @Message('pid文件没有移除')
      */
     const PID_FILE_NOT_REMOVE = 9100;
+    /**
+     * @Message('日志介质设置错误，只能在0~3之间')
+     */
+    const LOG_APPENDER_ERROR = 8100;
+    /**
+     * @Message('日志默认目录不可用')
+     */
+    const LOG_DEFAULT_BASEPATH = 8101;
+    /**
+     * @Message('日志Logger创建失败')
+     */
+    const LOG_CREAGE_LOGGER = 8102;
+    /**
+     * @Message('日志写入失败')
+     */
+    const LOG_WRITE_ERROR = 8201;
+    /**
+     * @Message('日志方法没找到')
+     */
+    const LOG_METHOD_NOT_FOUND = 8301;
     
 }
