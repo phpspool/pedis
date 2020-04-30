@@ -93,10 +93,9 @@ class PedisServer
         }
         $sndbuf = socket_get_option($sock, SOL_SOCKET, SO_SNDBUF);
         $rcvbuf = socket_get_option($sock, SOL_SOCKET, SO_RCVBUF);
-        $log = Log::debug("send buffer size(写缓存区大小):" . $sndbuf / 1024 . "}m \n");
+        Log::debug("send buffer size(写缓存区大小):" . $sndbuf / 1024 . "}m \n");
+        $log = Log::debug("receive buffer size(写缓存区大小):" . $rcvbuf / 1024 . "}m \n");
         fwrite(STDOUT, "log: " . $log . "\n");
-        printf("send buffer size(写缓存区大小):%sm \n", $sndbuf / 1024);
-        printf("receive buffer(读缓存区大小)%sm \n", $rcvbuf / 1024);
         $this->workNode($sock);
         foreach ($this->event['endBefore'] as $callInfo) {
             call_user_func($callInfo['callBack'], $callInfo['params'] ?? NULL);
