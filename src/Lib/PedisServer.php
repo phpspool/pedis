@@ -99,9 +99,12 @@ class PedisServer
 
     private function workNode(&$sock)
     {
-        $clients = array($sock);
+        $baseip = $baseport = NULL;
+        socket_getsockname($sock, $baseip, $baseport);
+        $baseKey = $baseip . ':' . $baseport;
+        $this->clients[$baseKey] = $sock;
         while (true) {
-            $read   = $clients;
+            $read   = $this->clients;
             $write  = $except = NULL;
             // get a list of all the clients that have data to be read from
             // if there are no clients with data, go to next iteration
@@ -109,19 +112,22 @@ class PedisServer
             socket_select($read, $write, $except, NULL);
             fwrite(STDOUT, "读取到数据了socket!\n");
             // check if there is a client trying to connect
-            if (in_array($sock, $read)) {
+            if (in_array($sock, $read, TRUE)) {
                 // accept the client, and add him to the $clients array
-                $clients[] = $newsock   = socket_accept($sock);
+                $newsock   = socket_accept($sock);
+                $ip      = NULL;
+                $port    = NULL;
+                socket_getpeername($newsock, $ip, $port);
+                $newKey = $ip . ':' . $port;
+                $this->clients[$newKey] = $newsock;
 
                 $welcome = "Welcome to the PEDIS family, where you can do whatever you like.";
                 // send the client a welcome message
                 socket_write($newsock, $welcome);
-                $ip      = NULL;
-                socket_getpeername($newsock, $ip);
-                $msg     = "New client connected: {$ip}\n";
+                $msg     = "New client connected: {$ip}:{$port}\n";
                 fwrite(STDOUT, $msg);
                 // remove the listening socket from the clients-with-data array
-                $key     = array_search($sock, $read);
+                $key     = array_search($sock, $read, TRUE);
                 unset($read[$key]);
             }
 //            break;
@@ -147,9 +153,9 @@ class PedisServer
                     continue;
                 } else if (0 === $len_read) {
                     // remove client for $clients array
-                    $key = array_search($read_sock, $clients);
-                    unset($clients[$key]);
-                    $msg = "client disconnected.\n";
+                    $key = array_search($read_sock, $this->clients, TRUE);
+                    unset($this->clients[$key]);
+                    $msg = "{$key} client disconnected.\n";
                     fwrite(STDOUT, $msg);
                     // continue to the next client to read from, if any
                     continue;
@@ -162,24 +168,30 @@ class PedisServer
                 }
                 // check if there is any data after trimming off the spaces
                 if (!empty($data)) {
-                    var_dump($clients);
                     // send this to all the clients in the $clients array (except the first one, which is a listening socket)
-                    foreach ($clients as $send_sock) {
+                    foreach ($this->clients as $send_sock) {
                         
                         // if its the listening sock or the client that we got the message from, go to the next one in the list
-                        if ($send_sock == $sock || $send_sock == $read_sock)
+                        if ($send_sock == $sock)
                             continue;
+                        if ($send_sock == $read_sock) {
+                            $send_msg = "get Data: {$data}\n";
+                            $slen = strlen($send_msg);
+                            $sendLen = socket_write($send_sock, $send_msg, $slen);
+                            continue;
+                        }
                         fwrite(STDOUT, "send: {$data}\n");
                         $sendMsg = $data . "\n";
                         $len = strlen($sendMsg);
-                        $sendLen = 0;
                         // write the message to the client -- add a newline character to the end of the message
                         try {
+                            //一直过不去,不知道为什么,只能用socket_write来实现了
 //                            socket_send($send_sock, $sendMsg, $len, MSG_DONTROUTE);
                             $sendLen = socket_write($send_sock, $sendMsg, $len);
                         } catch (\Exception $exc) {
                             echo $exc->getTraceAsString();
                             echo $exc->getMessage();
+                            $sendLen = 0;
                         }
                         if ($sendLen) {
                             fwrite(STDOUT, "need send {$len}, send {$sendLen}\n");
