@@ -31,9 +31,9 @@ class PedisServer
      */
     private $event = [
         'startBefore' => [],
-        'startAfter'  => [],
-        'endBefore'   => [],
-        'endAfter'    => []
+        'startAfter' => [],
+        'endBefore' => [],
+        'endAfter' => []
     ];
     protected $command;
 
@@ -54,7 +54,6 @@ class PedisServer
      * @var array
      */
     private $client = [];
-    
     private $existsWatchers = [];
     private $nodeWatchers = [];
     private $clientWatchers = [];
@@ -75,9 +74,9 @@ class PedisServer
         if (self::$one) {
             return self::$one;
         }
-        self::$one         = new PedisServer();
+        self::$one = new PedisServer();
         self::$one->config = $config;
-        self::$one->event  = $event;
+        self::$one->event = $event;
         return self::$one;
     }
 
@@ -95,7 +94,7 @@ class PedisServer
         $rcvbuf = socket_get_option($sock, SOL_SOCKET, SO_RCVBUF);
         Log::debug("send buffer size(写缓存区大小):" . $sndbuf / 1024 . "}m \n");
         $log = Log::debug("receive buffer size(写缓存区大小):" . $rcvbuf / 1024 . "}m \n");
-        fwrite(STDOUT, "log: " . $log . "\n");
+        Log::debug("日志打印返回了: {$log}\n");
         $this->workNode($sock);
         foreach ($this->event['endBefore'] as $callInfo) {
             call_user_func($callInfo['callBack'], $callInfo['params'] ?? NULL);
@@ -109,30 +108,20 @@ class PedisServer
         $baseKey = $baseip . ':' . $baseport;
         $this->clients[$baseKey] = $sock;
         while (true) {
-            $read   = $this->clients;
-            $write  = $except = NULL;
+            $read = $this->clients;
+            $write = $except = NULL;
             // get a list of all the clients that have data to be read from
             // if there are no clients with data, go to next iteration
-            fwrite(STDOUT, "正在等待读取socket!\n");
+            Log::debug("正在等待读取socket!\n");
             socket_select($read, $write, $except, NULL);
-            fwrite(STDOUT, "读取到数据了socket!\n");
+            Log::debug("读取到数据了socket!\n");
             // check if there is a client trying to connect
             if (in_array($sock, $read, TRUE)) {
                 // accept the client, and add him to the $clients array
-                $newsock   = socket_accept($sock);
-                $ip      = NULL;
-                $port    = NULL;
-                socket_getpeername($newsock, $ip, $port);
-                $newKey = $ip . ':' . $port;
-                $this->clients[$newKey] = $newsock;
-
-                $welcome = "Welcome to the PEDIS family, where you can do whatever you like.";
-                // send the client a welcome message
-                socket_write($newsock, $welcome);
-                $msg     = "New client connected: {$ip}:{$port}\n";
-                fwrite(STDOUT, $msg);
+                $newkey = $this->addClient($sock);
+                Log::debug("New client connected: {$newkey}\n");
                 // remove the listening socket from the clients-with-data array
-                $key     = array_search($sock, $read, TRUE);
+                $key = array_search($sock, $read, TRUE);
                 unset($read[$key]);
             }
 //            break;
@@ -140,12 +129,12 @@ class PedisServer
             foreach ($read as $read_sock) {
                 // read until newline or 1024 bytes
                 // socket_read while show errors when the client is disconnected, so silence the error messages
-                $string_read     = '';
+                $string_read = '';
                 try {
                     $len_read = socket_recv($read_sock, $string_read, 1024, MSG_DONTWAIT);
                     $len_read = strlen($string_read);
                     if ($len_read > 0) {
-                        fwrite(STDOUT, $string_read . "\n");
+                        Log::debug($string_read . "\n");
                     }
                 } catch (\Exception $exc) {
                     echo $exc->getTraceAsString();
@@ -156,12 +145,12 @@ class PedisServer
                 if ($len_read === false) {
                     // no data
                     continue;
-                } else if (0 === $len_read) {
+                }
+                else if (0 === $len_read) {
                     // remove client for $clients array
                     $key = array_search($read_sock, $this->clients, TRUE);
                     unset($this->clients[$key]);
-                    $msg = "{$key} client disconnected.\n";
-                    fwrite(STDOUT, $msg);
+                    Log::debug("{$key} client disconnected.\n");
                     // continue to the next client to read from, if any
                     continue;
                 }
@@ -175,7 +164,7 @@ class PedisServer
                 if (!empty($data)) {
                     // send this to all the clients in the $clients array (except the first one, which is a listening socket)
                     foreach ($this->clients as $send_sock) {
-                        
+
                         // if its the listening sock or the client that we got the message from, go to the next one in the list
                         if ($send_sock == $sock)
                             continue;
@@ -185,7 +174,7 @@ class PedisServer
                             $sendLen = socket_write($send_sock, $send_msg, $slen);
                             continue;
                         }
-                        fwrite(STDOUT, "send: {$data}\n");
+                        Log::debug("send: {$data}\n");
                         $sendMsg = $data . "\n";
                         $len = strlen($sendMsg);
                         // write the message to the client -- add a newline character to the end of the message
@@ -199,17 +188,28 @@ class PedisServer
                             $sendLen = 0;
                         }
                         if ($sendLen) {
-                            fwrite(STDOUT, "need send {$len}, send {$sendLen}\n");
+                            Log::debug("need send {$len}, send {$sendLen}\n");
                         }
                     } // end of broadcast foreach
                 }
             } // end of reading foreach
         }
     }
-    
-    private function addClient($sock)
+
+    private function addClient($sock): string
     {
-        
+        // accept the client, and add him to the $clients array
+        $newsock = socket_accept($sock);
+        $ip = NULL;
+        $port = NULL;
+        socket_getpeername($newsock, $ip, $port);
+        $newKey = $ip . ':' . $port;
+        $this->clients[$newKey] = $newsock;
+
+        $welcome = "Welcome to the PEDIS family, where you can do whatever you like.";
+        // send the client a welcome message
+        socket_write($newsock, $welcome);
+        return $newKey;
     }
 
     private function bindIPAndPort(&$sock): bool

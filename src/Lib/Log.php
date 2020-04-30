@@ -19,13 +19,20 @@ use Spool\Pedis\Constants\ErrorCode;
  */
 
 /**
- * @method static alert(string $msg='', array $content=[], string $logger='default'):bool 记录一条公共日志
- * @method static critical(string $msg='', array $content=[], string $logger='default'):bool 记录一条公共日志
- * @method static error(string $msg='', array $content=[], string $logger='default'):bool 记录一条公共日志
- * @method static warning(string $msg='', array $content=[], string $logger='default'):bool 记录一条公共日志
- * @method static notice(string $msg='', array $content=[], string $logger='default'):bool 记录一条公共日志
- * @method static info(string $msg='', array $content=[], string $logger='default'):bool 记录一条公共日志
- * @method static debug(string $msg='', array $content=[], string $logger='default'):bool 记录一条公共日志
+ * 记录一条公共日志
+ * @method static alert(string $msg='', array $content=[], string $logger='default')
+ * 记录一条公共日志
+ * @method static critical(string $msg='', array $content=[], string $logger='default')
+ * 记录一条公共日志
+ * @method static error(string $msg='', array $content=[], string $logger='default')
+ * 记录一条公共日志
+ * @method static warning(string $msg='', array $content=[], string $logger='default')
+ * 记录一条公共日志
+ * @method static notice(string $msg='', array $content=[], string $logger='default')
+ * 记录一条公共日志
+ * @method static info(string $msg='', array $content=[], string $logger='default')
+ * 记录一条公共日志
+ * @method static debug(string $msg='', array $content=[], string $logger='default')
  */
 class Log
 {
