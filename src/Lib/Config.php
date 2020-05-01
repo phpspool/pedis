@@ -57,9 +57,9 @@ class Config
 
     /**
      * loglevel
-     * @var string debug|verbose|notice|warning
+     * @var string 0-EMERGENCY 1-ALERT 2-CRITICAL 3-ERROR 4-WARNING 5-NOTICE 6-INFO 7-DEBUG 8-ALL
      */
-    public $loglevel                = 'notice';
+    public $loglevel                = 7;
 
     /**
      * logfile 
@@ -126,7 +126,7 @@ class Config
      * 最大客户端连接数
      * @var int
      */
-    public $maxclients              = 0;
+    public $maxclients              = 65535;
     //MEMORY MANAGEMENT
     /**
      *
@@ -139,6 +139,22 @@ class Config
      * @var string volatile-lru|allkeys-lru|volatile-random|allkeys-random|volatile-ttl
      */
     public $maxmemoryPolicy         = 'noeviction';
+    /**
+     * 是否开启末尾检测,默认
+     * @var bool
+     */
+    public $openEofSplit	     = true;
+    /**
+     * 目前只支持\r\n,不支持别的
+     */
+//    public $packageEof = "\r\n";
+    
+    public $packageMaxLength = 1024 * 1024 * 2;
+    
+    public $openLengthCheck = false;
+    public $packageLengthType = 'N';
+    public $packageLengthOffset = 0;
+    public $packageBodyOffset = 4;
 
     /**
      * 初始化配置,如果

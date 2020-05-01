@@ -33,4 +33,12 @@ class OtherTest extends TestCase
         Log::test();
         $this->assertTrue(true);
     }
+    public function testMd5()
+    {
+	$key = [];
+	for($i = 1; $i < 65537; $i++){
+	    $key[md5($i)] = 1;
+	}
+	var_dump($i, count($key));
+    }
 }

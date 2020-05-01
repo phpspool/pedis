@@ -32,6 +32,8 @@ class BootStrap
     private $event = [
         'startBefore' => [],
         'startAfter'  => [],
+        'commandBefore' => [],
+        'commandAfter' => [],
         'endBefore'   => [],
         'endAfter'    => []
     ];
@@ -43,6 +45,8 @@ class BootStrap
     private static $one;
     
     private $server;
+    
+    private static $exc;
 
     /**
      * 构建函数,初始化,读取配置信息
@@ -66,6 +70,8 @@ class BootStrap
         }
         self::$one         = new BootStrap();
         self::$one->config = $config;
+	self::$exc = new PedisException();
+//	set_exception_handler(['PedisException', 'render']);
         return self::$one;
     }
 
@@ -95,13 +101,13 @@ class BootStrap
     {
 //        sleep(5);
         $msg = "\nI'm a super process!\n";
-        fwrite(STDOUT, $msg);
+        Log::debug($msg);
         $this->server = PedisServer::Init($this->config, $this->event);
         $this->server->serverStart();
         if (is_file($this->config->pidfile)) {
             try {
                 unlink($this->config->pidfile);
-            } catch (\Exception $exc) {
+            } catch (PedisException $exc) {
                 throw new PedisException(ErrorCode::PID_FILE_NOT_REMOVE);
             }
         }

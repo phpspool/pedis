@@ -6,10 +6,11 @@
  * and open the template in the editor.
  */
 
-namespace Spool\Pedis\Lib;
+namespace Spool\Pedis\Data;
 
 use Spool\Pedis\Exceptions\PedisException;
 use Spool\Pedis\Constants\ErrorCode;
+use Spool\Pedis\Data\KeyNode;
 /**
  * Pedis的键列表类,用于操作数据库里面的所有键值
  *
@@ -170,7 +171,9 @@ class KeyList
     {
         if ($this->data[$key] instanceof KeyNode) {
             return $this->data[$key];
-        } else {
+        } elseif (!isset($this->data[$key])) {
+	    $this->data[$key] = new KeyNode();
+    }else {
             throw new PedisException(ErrorCode::getMessage(ErrorCode::DATA_FORMATTING_ERROR));
         }
     }

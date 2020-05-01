@@ -13,6 +13,7 @@ namespace Spool\Pedis\Constants;
  * |2000+DB错误
  * |3000+KeyList错误
  * |4000+KeyNode错误
+ * |5000+命令错误
  * |8000+Log错误
  * |9000+结束错误
  * 致命错误信息:< 0
@@ -62,9 +63,13 @@ class ErrorCode extends AbstractConstants
      */
     const CANNOT_SELECT_LARGER_THAN_THE_CONFIGURATION_DATABASE = 2100;
     /**
-     * @Message('数据格式错误')
+     * @Message('缓存的数据格式错误')
      */
     const DATA_FORMATTING_ERROR = 4100;
+    /**
+     * @Message('缓存的数据格式错误')
+     */
+    const KEY_TYPE_IS_WRONG = 4001;
     /**
      * @Message('pid文件没有移除')
      */
@@ -89,5 +94,13 @@ class ErrorCode extends AbstractConstants
      * @Message('日志方法没找到')
      */
     const LOG_METHOD_NOT_FOUND = 8301;
+    /**
+     * @Message('错误的命令')
+     */
+    const COMMAND_IS_INVALID = 5001;
+    /**
+     * @Message('命令没找到')
+     */
+    const COMMAND_NOT_FOUND= 5002;
     
 }
