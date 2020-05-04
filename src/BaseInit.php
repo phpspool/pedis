@@ -139,7 +139,7 @@ defined('BASE_COMMANDS') || define('BASE_COMMANDS', [
     'WATCH'            => 'transation',
     //connection
     'AUTH'             => 'connection',
-    'ECHO'             => 'connection',
+    'ECHOS'             => 'connection',
     'PING'             => 'connection',
     'QUIT'             => 'connection',
     'SELECT'           => 'connection',

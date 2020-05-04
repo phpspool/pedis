@@ -113,5 +113,5 @@ class LogConfig
      * https://www.php.net/manual/zh/seaslog.configuration.php
      * @var string
      */
-    public $defaultTemplate = "%T | %L | %P | %Q | %t | %M";
+    public $defaultTemplate = "%T | %L | %P | %F | %t | %M";
 }

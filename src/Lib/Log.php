@@ -20,19 +20,19 @@ use Spool\Pedis\Constants\ErrorCode;
 
 /**
  * 记录一条公共日志
- * @method static alert(string $msg='', array $content=[], string $logger='default')
+ * @method static alert($msg, array $content=[], string $logger='default')
  * 记录一条公共日志
- * @method static critical(string $msg='', array $content=[], string $logger='default')
+ * @method static critical($msg, array $content=[], string $logger='default')
  * 记录一条公共日志
- * @method static error(string $msg='', array $content=[], string $logger='default')
+ * @method static error($msg, array $content=[], string $logger='default')
  * 记录一条公共日志
- * @method static warning(string $msg='', array $content=[], string $logger='default')
+ * @method static warning($msg, array $content=[], string $logger='default')
  * 记录一条公共日志
- * @method static notice(string $msg='', array $content=[], string $logger='default')
+ * @method static notice($msg, array $content=[], string $logger='default')
  * 记录一条公共日志
- * @method static info(string $msg='', array $content=[], string $logger='default')
+ * @method static info($msg, array $content=[], string $logger='default')
  * 记录一条公共日志
- * @method static debug(string $msg='', array $content=[], string $logger='default')
+ * @method static debug($msg, array $content=[], string $logger='default')
  */
 class Log
 {
@@ -84,11 +84,26 @@ class Log
         $logger = $arguments[2] ?? '';
         return self::log($name, $msg, $content, $logger);
     }
-
-    public static function log(string $level, string $msg = '', array $content = [], string $logger = ''): bool
+    /**
+     * 打印日志
+     * @param string $level
+     * @param type $msg
+     * @param array $content
+     * @param string $logger
+     * @return bool
+     * @throws PedisLogException
+     */
+    public static function log(string $level, $msg = '', array $content = [], string $logger = ''): bool
     {
         if (!isset(self::$level[strtolower($level)])) {
             throw new PedisLogException((string)ErrorCode::LOG_METHOD_NOT_FOUND);
+        }
+        if (is_string($msg)) {
+            $formatMsg = trim($msg) . "\n";
+        }elseif (is_array($msg)) {
+            $formatMsg = json_encode($msg, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "\n";
+        } else {
+            throw new PedisLogException((string)ErrorCode::LOG_MESSAGE_IS_INVALID);
         }
         if (!self::$logConfig) {
             self::setConfig();
@@ -98,7 +113,7 @@ class Log
             return FALSE;
         }
         $info = debug_backtrace();
-        $callInfo = current($info);
+        $callInfo = $info[1];
         $time = date(self::$logConfig->defaultDatetimeFormat);
         $host = gethostname();
         $pid = posix_getpid();
@@ -114,7 +129,7 @@ class Log
         $tmpl = str_replace(
                 ['%L', '%M', '%T', '%t', '%Q', '%H', '%P'
             , '%D', '%R', '%m', '%l', '%F', '%U', '%u', '%C']
-                , [$level, $msg, $time, microtime(TRUE), self::$requestID, $host, $pid
+                , [$level, $formatMsg, $time, microtime(TRUE), self::$requestID, $host, $pid
             , $d, $uri, $method, $remote_ip, $file, $U, $u, $classInfo]
                 , self::$logConfig->defaultTemplate);
         $len = strlen($tmpl);

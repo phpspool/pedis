@@ -23,41 +23,29 @@ abstract class KeyNode
      * 该键实际保存的数据
      * @var void
      */
-    private $data;
+    protected $data;
 
     /**
      * 生存时间
      * @var int -2已过期|-1永不过期|n剩余的生存时间
      */
-    private $expire		 = -1;
+    protected $expire		 = -1;
 
     /**
      * 设置生存时间的时间
      * @var int 
      */
-    private $expireTime	 = 0;
+    protected $expireTime	 = 0;
 
     /**
      * 键的类型
      * @var string String|List|Set|Zset|Hash
      */
-    private $type		 = '';
+    protected $type		 = '';
 
     public function __sleep(): array
     {
-	return ['data' => $this->data, 'expire' => $this->expire, 'type' => $this->type];
-    }
-
-    public function setType(string $type): bool
-    {
-	if (!$this->type) {
-	    $this->type = $type;
-	    return true;
-	} elseif ($this->type === $type) {
-	    return true;
-	} else {
-	    throw new PedisException(ErrorCode::KEY_TYPE_IS_WRONG);
-	}
+	return ['type' => $this->type, 'expire' => $this->expire, 'data' => $this->data];
     }
 
     public function expire(int $seconds): int
@@ -98,6 +86,14 @@ abstract class KeyNode
 	$this->expire		 = -1;
 	$this->expireTime	 = 0;
 	return 1;
+    }
+    /**
+     * 返回当前键的类型
+     * @return string
+     */
+    public function getType(): string
+    {
+	return $this->type;
     }
 
 }

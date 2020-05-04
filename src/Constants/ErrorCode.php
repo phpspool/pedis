@@ -63,7 +63,7 @@ class ErrorCode extends AbstractConstants
      */
     const CANNOT_SELECT_LARGER_THAN_THE_CONFIGURATION_DATABASE = 2100;
     /**
-     * @Message('缓存的数据格式错误')
+     * @Message('数据格式不支持该操作')
      */
     const DATA_FORMATTING_ERROR = 4100;
     /**
@@ -94,6 +94,10 @@ class ErrorCode extends AbstractConstants
      * @Message('日志方法没找到')
      */
     const LOG_METHOD_NOT_FOUND = 8301;
+    /**
+     * @Message('日志信息格式错误,只支持string和array')
+     */
+    const LOG_MESSAGE_IS_INVALID = 8302;
     /**
      * @Message('错误的命令')
      */

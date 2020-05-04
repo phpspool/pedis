@@ -10,7 +10,7 @@ namespace Spool\Pedis\Data;
 
 use Spool\Pedis\Exceptions\PedisException;
 use Spool\Pedis\Constants\ErrorCode;
-use Spool\Pedis\Data\KeyNode;
+
 /**
  * Pedis的键列表类,用于操作数据库里面的所有键值
  *
@@ -18,6 +18,7 @@ use Spool\Pedis\Data\KeyNode;
  */
 class KeyList
 {
+
     public static $toSearch = '';
 
     /**
@@ -30,13 +31,13 @@ class KeyList
      * 当前数据库中保存的所有键值
      * @var array
      */
-    private $keys        = [];
+    private $keys = [];
 
     /**
      * 对键值变更设置回调函数
      * @var array
      */
-    private $changWatch  = [];
+    private $changWatch = [];
 
     /**
      * 对键是否存在设置回调函数
@@ -149,6 +150,7 @@ class KeyList
         }
         return $data;
     }
+
     /**
      * 移除该健之前设定的生存时间
      * @param string $key
@@ -161,20 +163,23 @@ class KeyList
         $keyNode = $this->getKey($key);
         return $keyNode->persist();
     }
+
     /**
      * 根据键名,返回指定键的类
      * @param string $key
      * @return \Spool\Pedis\Lib\KeyNode
      * @throws PedisException
      */
-    public function getKey(string $key): KeyNode
+    public function getStringKey(string $key): StringKeyNode
     {
-        if ($this->data[$key] instanceof KeyNode) {
+        if (!isset($this->data[$key])) {
+            $this->data[$key] = new StringKeyNode();
             return $this->data[$key];
-        } elseif (!isset($this->data[$key])) {
-	    $this->data[$key] = new KeyNode();
-    }else {
+        } else if ($this->data[$key] instanceof StringKeyNode) {
+            return $this->data[$key];
+        } else {
             throw new PedisException(ErrorCode::getMessage(ErrorCode::DATA_FORMATTING_ERROR));
         }
     }
+
 }

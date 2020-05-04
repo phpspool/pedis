@@ -17,9 +17,16 @@ use Spool\Pedis\Data\KeyList;
  */
 class ConnectionCommand
 {
-    public function select(DbNode &$db, int $dbIndex, int $clientKey): array
+    public function select(DbNode &$db, int $clientKey, int $dbIndex): array
     {
-        return $db->select($dbIndex, $clientKey);
+        return $db->select($clientKey, $dbIndex);
     }
-    
+    public function ping(DbNode &$db): array
+    {
+        return $db->ping();
+    }
+    public function echos(DbNode &$db, int $clientKey, string $msg): array
+    {
+        return $db->echos($msg);
+    }
 }

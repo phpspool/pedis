@@ -7,9 +7,12 @@
  */
 
 namespace Spool\Pedis\Commands;
+
 use Spool\Pedis\Data\DbNode;
 use Spool\Pedis\Data\KeyList;
 use Spool\Pedis\Data\KeyNode;
+use Spool\Pedis\Data\StringKeyNode;
+use Spool\Pedis\Lib\Log;
 
 /**
  * Description of StringCommand
@@ -18,9 +21,25 @@ use Spool\Pedis\Data\KeyNode;
  */
 class StringCommand
 {
-    public function set(KeyList $keyList, string $key, string $value): array
+
+    public function set(DbNode &$dbNode, int $clientKey, string $key, array $value): array
     {
-	$keyNode = $keyList->getKey($key);
-	$keyNode->setType('string');
+        $keyNode = $dbNode->getClientDb($clientKey)->getStringKey($key);
+        Log::debug($value);
+        return $keyNode->set($value);
     }
+
+    public function get(DbNode &$dbNode, int $clientKey, string $key): array
+    {
+        if ($dbNode->getClientDb($clientKey)->exists($key)) {
+            return $dbNode->getClientDb($clientKey)->getStringKey($key)->get();
+        } else {
+            return [
+                'code' => 1,
+                'msg'  => 'ok',
+                'data' => 'nil',
+            ];
+        }
+    }
+
 }

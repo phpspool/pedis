@@ -194,14 +194,18 @@ class PedisServer
 		    }
 		    // send this to all the clients in the $clients array (except the first one, which is a listening socket)
 		    foreach ($this->clients as $key => $send_sock) {
-
 			// if its the listening sock or the client that we got the message from, go to the next one in the list
 			if ($send_sock == $sock) {
 			    continue;
 			}
 			if ($send_sock == $read_sock) {
-			    $send_msg	 = "{$key} get Data: {$data}\n";
-			    $send_msg	 .= json_encode($result, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "\n";
+                            if (isset($result['data']) && is_string($result['data'])) {
+                                $send_msg = $result['data'] . "\n";
+                            } elseif (isset($result['data']) && is_array($result['data'])) {
+                                $send_msg = json_encode($result['data'], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "\n";
+                            } else {
+                                $send_msg = $result['msg'] . "\n";
+                            }
 			    $slen		 = strlen($send_msg);
 			    $sendLen	 = socket_send($send_sock, $send_msg, $slen, 0);
 //			    $sendLen	 = socket_write($send_sock, $send_msg, $slen);
@@ -227,15 +231,6 @@ class PedisServer
 		}
 	    } // end of reading foreach
 	}
-    }
-
-    /**
-     * 命令处理
-     * @param string $data
-     */
-    private function command(string $data): array
-    {
-	
     }
 
     /**

@@ -11,6 +11,7 @@ namespace Spool\Pedis\Data;
 use Spool\Pedis\Exceptions\PedisException;
 use Spool\Pedis\Constants\ErrorCode;
 use Spool\Pedis\Lib\Config;
+use Spool\Pedis\Lib\Log;
 
 /**
  * Pedis的数据库类,用于操作数据库的相关操作
@@ -35,17 +36,17 @@ class DbNode
     public function __construct(Config &$config)
     {
         $this->config = $config;
-//        $this->db[$this->dbIndex] = new KeyList();
+        $this->db[0] = new KeyList();
     }
     /**
      * 指定选择的数据库
      * 这里的实现不对,应该是每个客户端都能选择自己要操作的数据库,而不是一次选择,都得操作一个库
-     * @param int $dbIndex
      * @param int $clientKey 客户端
+     * @param int $dbIndex
      * @return \Spool\Pedis\Lib\KeyList
      * @throws PedisException
      */
-    public function select(int $dbIndex, int $clientKey): array
+    public function select(int $clientKey, int $dbIndex): array
     {
         if ($dbIndex < 0 || $dbIndex >= $this->config->databases ) {
             throw new PedisException(ErrorCode::getMessage(ErrorCode::CANNOT_SELECT_LARGER_THAN_THE_CONFIGURATION_DATABASE));
