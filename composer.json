@@ -1,5 +1,5 @@
 {
-    "name": "spool/prdis",
+    "name": "spool/pedis",
     "description": "Redis based on PHP source development",
     "type": "project",
     "license": "php",
@@ -10,14 +10,15 @@
         }
     ],
     "require": {
-        "php": ">=7.0.0"
+        "php": ">=7.1.0"
     },
     "require-dev": {
         "phpunit/phpunit": "@stable"
     },
     "autoload": {
         "psr-4": {
-            "Yin32167\\CpsTpl\\": "src/"
-        }
+            "Spool\\Pedis\\": "src/"
+        },
+        "files":["src/BaseInit.php"]
     }
 }
